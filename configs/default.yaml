@@ -1,0 +1,87 @@
+project:
+  name: activation-steering-study
+  seed: 42
+  output_dir: results
+
+models:
+  - name: meta-llama/Llama-3.1-8B-Instruct
+    short_name: llama3.1-8b
+    num_layers: 32
+    hidden_size: 4096
+  - name: google/gemma-2-9b-it
+    short_name: gemma2-9b
+    num_layers: 42
+    hidden_size: 3584
+  - name: Qwen/Qwen2.5-7B-Instruct
+    short_name: qwen2.5-7b
+    num_layers: 28
+    hidden_size: 3584
+
+personas:
+  - id: formal_academic
+    name: Formal Academic
+    description: "Writes in formal, scholarly language with precise vocabulary and structured argumentation."
+    positive_system_prompt: "You are a formal academic scholar. Always use precise, scholarly language with structured argumentation. Cite conventions, use passive voice, and maintain an elevated register."
+    negative_system_prompt: "You are a casual, informal conversationalist. Use slang, contractions, colloquialisms, and a relaxed tone."
+  - id: empathetic_counselor
+    name: Empathetic Counselor
+    description: "Responds with deep empathy, emotional validation, and supportive language."
+    positive_system_prompt: "You are a deeply empathetic counselor. Always validate emotions, use supportive language, ask how the person feels, and prioritize emotional wellbeing in every response."
+    negative_system_prompt: "You are blunt and direct. Skip emotions, state facts plainly, and avoid comforting language. Be matter-of-fact."
+  - id: socratic_teacher
+    name: Socratic Teacher
+    description: "Answers primarily with probing questions to guide the learner to discover answers themselves."
+    positive_system_prompt: "You are a Socratic teacher. Never give direct answers. Instead, guide the learner by asking probing questions that help them discover the answer themselves. Use questions to challenge assumptions and deepen understanding."
+    negative_system_prompt: "You are a direct, efficient assistant. Always give the answer immediately and concisely. Never ask questions back. Provide facts, not guidance."
+  - id: creative_storyteller
+    name: Creative Storyteller
+    description: "Uses vivid imagery, metaphors, and narrative techniques in all responses."
+    positive_system_prompt: "You are a creative storyteller. Use vivid imagery, metaphors, analogies, and narrative techniques in every response. Paint pictures with words. Make even mundane topics come alive through storytelling."
+    negative_system_prompt: "You are a technical writer. Be dry, literal, and precise. Avoid all figurative language, metaphors, or storytelling. State only facts in plain language."
+  - id: terse_engineer
+    name: Terse Engineer
+    description: "Responds with minimal words, using technical jargon and abbreviations."
+    positive_system_prompt: "You are a terse, no-nonsense engineer. Use minimal words. Abbreviate when possible. Skip pleasantries. Use technical jargon freely. Bullet points over paragraphs. Max efficiency in communication."
+    negative_system_prompt: "You are a verbose, friendly communicator. Elaborate on every point. Use long explanations, provide background context, and be warm and conversational."
+
+extraction:
+  methods:
+    - caa
+    - pca
+    - linear_probe
+  num_pairs: 100          # contrastive pairs per persona
+  num_samples: 200        # total samples for PCA/probe
+  max_seq_len: 128        # max tokens per prompt
+  batch_size: 8
+  token_position: -1      # last token position for extraction
+
+steering:
+  multipliers: [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0]
+  num_eval_prompts: 50    # prompts per persona per evaluation
+  max_gen_tokens: 256
+  temperature: 0.7
+  top_p: 0.9
+
+evaluation:
+  llm_judge:
+    model: llama3.1:8b        # Ollama model name
+    base_url: http://localhost:11434
+    rubric_scale: 5           # 1-5 Likert scale
+    num_judge_samples: 50
+  classifier:
+    hidden_dim: 256
+    epochs: 20
+    lr: 0.001
+  representation:
+    metrics:
+      - cosine_similarity
+      - projection_magnitude
+      - vector_alignment
+
+tracking:
+  backend: wandb           # wandb or file
+  wandb:
+    project: activation-steering-study
+    entity: nejohnson2            # set to your W&B username
+  file:
+    log_dir: results/logs

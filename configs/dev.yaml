@@ -1,0 +1,56 @@
+project:
+  name: activation-steering-study-dev
+  seed: 42
+  output_dir: results
+
+models:
+  - name: meta-llama/Llama-3.1-8B-Instruct
+    short_name: llama3.1-8b
+    num_layers: 32
+    hidden_size: 4096
+
+personas:
+  - id: formal_academic
+    name: Formal Academic
+    description: "Writes in formal, scholarly language with precise vocabulary and structured argumentation."
+    positive_system_prompt: "You are a formal academic scholar. Always use precise, scholarly language with structured argumentation. Cite conventions, use passive voice, and maintain an elevated register."
+    negative_system_prompt: "You are a casual, informal conversationalist. Use slang, contractions, colloquialisms, and a relaxed tone."
+
+extraction:
+  methods:
+    - caa
+    - pca
+    - linear_probe
+  num_pairs: 20
+  num_samples: 40
+  max_seq_len: 128
+  batch_size: 4
+  token_position: -1
+
+steering:
+  multipliers: [1.0, 2.0, 3.0]
+  num_eval_prompts: 5
+  max_gen_tokens: 128
+  temperature: 0.7
+  top_p: 0.9
+
+evaluation:
+  llm_judge:
+    model: llama3.1:8b
+    base_url: http://localhost:11434
+    rubric_scale: 5
+    num_judge_samples: 5
+  classifier:
+    hidden_dim: 256
+    epochs: 10
+    lr: 0.001
+  representation:
+    metrics:
+      - cosine_similarity
+      - projection_magnitude
+      - vector_alignment
+
+tracking:
+  backend: file
+  file:
+    log_dir: results/logs
