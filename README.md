@@ -1,6 +1,10 @@
-# Activation Steering Study
+# The Geometry of Persona
 
-Comparative study of activation steering methods for persona control in large language models. Benchmarks three vector extraction approaches against prompt engineering across multiple model architectures.
+**Comparing Activation Steering Methods for Behavioral Control in Large Language Models**
+
+## Abstract
+
+Activation steering has emerged as a promising alternative to prompt engineering for controlling large language model (LLM) behavior, yet systematic comparisons of vector extraction methods remain scarce. We present a comprehensive study comparing three approaches to persona steering vector identification -- Contrastive Activation Addition (CAA), PCA-based extraction, and supervised linear probes -- across three architecturally distinct model families (Llama 3.1 8B, Gemma 2 9B, Qwen 2.5 7B) and five diverse persona types. For each method-model combination, we map the layer-wise effectiveness of steering vectors, revealing whether optimal injection points follow a consistent pattern relative to network depth or vary with architecture and persona type. We benchmark all steering conditions against prompt engineering baselines using a three-tier evaluation framework: representation-level metrics (cosine similarity shift, projection magnitude), a persona classifier trained on synthetic data, and LLM-as-judge scoring on a five-point Likert scale. Our findings characterize the trade-offs between extraction methods in terms of steering fidelity, behavioral consistency, and fluency preservation, while identifying the conditions under which activation steering surpasses -- or falls short of -- simple system-prompt-based persona control. We release our full experimental framework, steering vectors, and evaluation pipeline to support reproducible research in mechanistic approaches to LLM behavioral control.
 
 ## Research Questions
 
