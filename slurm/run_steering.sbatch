@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=steer-gen
-#SBATCH --partition=h200x4
+#SBATCH --partition=h200x4-long
 #SBATCH --gres=gpu:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
-#SBATCH --time=08:00:00
+#SBATCH --time=30:00:00
 #SBATCH --output=logs/steering_%j.out
 #SBATCH --error=logs/steering_%j.err
 
