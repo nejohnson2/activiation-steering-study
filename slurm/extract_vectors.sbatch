@@ -12,7 +12,7 @@
 module load cuda12.8/toolkit/12.8.1
 conda activate steering-study
 
-export PROJECT_DIR=/lustre/nvwulf/scratch/nijjohnson/activiation-steering-study
+export PROJECT_DIR=/lustre/nvwulf/scratch/nijjohnson/activation-steering-study
 export HF_HOME=/lustre/nvwulf/scratch/nijjohnson/hf_cache
 export HF_TOKEN=$(cat ${HOME}/.cache/huggingface/token)
 export PYTHONPATH=$PROJECT_DIR
