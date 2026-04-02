@@ -28,6 +28,7 @@ class CAAExtractor:
         negative_texts: list[str],
         token_position: int = -1,
         batch_size: int = 8,
+        max_seq_len: int = 128,
     ) -> dict[int, torch.Tensor]:
         """Compute CAA steering vectors across all layers.
 
@@ -36,6 +37,7 @@ class CAAExtractor:
             negative_texts: Texts with persona absent (same length).
             token_position: Token position for extraction.
             batch_size: Batch size for processing.
+            max_seq_len: Maximum sequence length for tokenization.
 
         Returns:
             Dict mapping layer_index -> steering vector (hidden_size,).
@@ -50,11 +52,13 @@ class CAAExtractor:
             positive_texts,
             token_position=token_position,
             batch_size=batch_size,
+            max_seq_len=max_seq_len,
         )
         neg_activations = self.extractor.extract(
             negative_texts,
             token_position=token_position,
             batch_size=batch_size,
+            max_seq_len=max_seq_len,
         )
 
         vectors = {}

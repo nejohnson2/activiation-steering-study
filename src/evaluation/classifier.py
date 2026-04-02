@@ -177,11 +177,14 @@ class PersonaClassifier:
     def save(self, path: str | Path):
         path = Path(path)
         path.parent.mkdir(parents=True, exist_ok=True)
+        # Get embed_dim from classifier input layer
+        embed_dim = self.classifier.net[0].in_features
         torch.save({
             "classifier_state": self.classifier.state_dict(),
             "persona_ids": self.persona_ids,
             "hidden_dim": self.hidden_dim,
             "embed_model_name": self.embed_model_name,
+            "embed_dim": embed_dim,
         }, path)
         logger.info(f"Saved persona classifier to {path}")
 
@@ -195,8 +198,7 @@ class PersonaClassifier:
             device=device or torch.device("cpu"),
         )
         # Reconstruct classifier architecture
-        obj._load_embedder()
-        input_dim = obj._embed_texts(["test"]).shape[1]
+        input_dim = data["embed_dim"]
         obj.classifier = PersonaClassifierModel(
             input_dim, data["hidden_dim"], len(data["persona_ids"])
         ).to(obj.device)

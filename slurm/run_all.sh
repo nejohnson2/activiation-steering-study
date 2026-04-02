@@ -8,8 +8,8 @@
 
 set -euo pipefail
 
-LOG_DIR="/lustre/nvwulf/scratch/nijjohnson/logs"
-mkdir -p "$LOG_DIR"
+PROJECT_DIR="/lustre/nvwulf/scratch/nijjohnson/activiation-steering-study"
+mkdir -p "$PROJECT_DIR/logs"
 
 MODELS=("llama3.1-8b" "gemma2-9b" "qwen2.5-7b")
 

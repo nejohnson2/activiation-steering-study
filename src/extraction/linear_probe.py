@@ -35,6 +35,7 @@ class LinearProbeExtractor:
         negative_texts: list[str],
         token_position: int = -1,
         batch_size: int = 8,
+        max_seq_len: int = 128,
     ) -> dict[int, torch.Tensor]:
         """Compute linear probe steering vectors across all layers.
 
@@ -43,6 +44,7 @@ class LinearProbeExtractor:
             negative_texts: Texts with persona absent.
             token_position: Token position for extraction.
             batch_size: Batch size for processing.
+            max_seq_len: Maximum sequence length for tokenization.
 
         Returns:
             Dict mapping layer_index -> steering vector (hidden_size,).
@@ -56,11 +58,13 @@ class LinearProbeExtractor:
             positive_texts,
             token_position=token_position,
             batch_size=batch_size,
+            max_seq_len=max_seq_len,
         )
         neg_activations = self.extractor.extract(
             negative_texts,
             token_position=token_position,
             batch_size=batch_size,
+            max_seq_len=max_seq_len,
         )
 
         vectors = {}
@@ -89,11 +93,13 @@ class LinearProbeExtractor:
             torch.zeros(neg.shape[0]),
         ])
 
+        # Train on CPU (activations are already on CPU from hooks)
+        device = X.device
         dataset = TensorDataset(X, y)
         loader = DataLoader(dataset, batch_size=32, shuffle=True)
 
         hidden_size = X.shape[1]
-        probe = nn.Linear(hidden_size, 1)
+        probe = nn.Linear(hidden_size, 1).to(device)
         optimizer = torch.optim.Adam(probe.parameters(), lr=self.lr)
         criterion = nn.BCEWithLogitsLoss()
 

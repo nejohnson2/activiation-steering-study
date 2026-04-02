@@ -116,6 +116,7 @@ class ActivationExtractor:
         token_position: int = -1,
         layer_indices: list[int] | None = None,
         batch_size: int = 8,
+        max_seq_len: int = 128,
     ) -> dict[int, torch.Tensor]:
         """Extract activations for a list of texts.
 
@@ -124,6 +125,7 @@ class ActivationExtractor:
             token_position: Token position to extract (-1 = last token).
             layer_indices: Layers to extract from. None = all.
             batch_size: Batch size for processing.
+            max_seq_len: Maximum sequence length for tokenization.
 
         Returns:
             Dict mapping layer_index -> tensor of shape (num_texts, hidden_size).
@@ -138,7 +140,7 @@ class ActivationExtractor:
                 return_tensors="pt",
                 padding=True,
                 truncation=True,
-                max_length=128,
+                max_length=max_seq_len,
             ).to(self.device)
 
             with torch.no_grad():

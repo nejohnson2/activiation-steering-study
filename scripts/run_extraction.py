@@ -78,6 +78,7 @@ def extract_vectors_for_model(
                 negative_texts=neg_texts,
                 token_position=ext_cfg["token_position"],
                 batch_size=ext_cfg["batch_size"],
+                max_seq_len=ext_cfg["max_seq_len"],
             )
 
             # Save vectors
