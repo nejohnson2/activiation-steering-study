@@ -10,6 +10,7 @@
 
 # --- Environment Setup ---
 module load cuda12.8/toolkit/12.8.1
+source "$(conda info --base)/etc/profile.d/conda.sh"
 conda activate steering-study
 
 export PROJECT_DIR=/lustre/nvwulf/scratch/nijjohnson/activation-steering-study
